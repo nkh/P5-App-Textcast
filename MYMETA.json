@@ -1,0 +1,55 @@
+{
+   "abstract" : "Light weight text casting",
+   "author" : [
+      "Nadim ibn hamouda el Khemir. <nkh@cpan.org>"
+   ],
+   "dynamic_config" : 0,
+   "generated_by" : "Module::Build version 0.4224",
+   "license" : [
+      "perl_5"
+   ],
+   "meta-spec" : {
+      "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+      "version" : 2
+   },
+   "name" : "App-Textcast",
+   "prereqs" : {
+      "build" : {
+         "requires" : {
+            "Test::Block" : 0,
+            "Test::Exception" : 0,
+            "Test::NoWarnings" : 0,
+            "Test::Warn" : 0,
+            "Text::Diff" : 0
+         }
+      },
+      "runtime" : {
+         "requires" : {
+            "File::Slurp" : 0,
+            "Getopt::Long" : 0,
+            "IO::Handle" : 0,
+            "IO::Pty" : 0,
+            "POSIX" : 0,
+            "Readonly" : 0,
+            "Sub::Exporter" : 0,
+            "Term::Size" : 0.2,
+            "Term::VT102" : 0,
+            "Time::HiRes" : 0
+         }
+      }
+   },
+   "provides" : {
+      "App::Textcast" : {
+         "file" : "lib/App/Textcast.pm",
+         "version" : "0.06"
+      }
+   },
+   "release_status" : "stable",
+   "resources" : {
+      "license" : [
+         "http://dev.perl.org/licenses/"
+      ]
+   },
+   "version" : "v0.06.15",
+   "x_serialization_backend" : "JSON::PP version 2.97001"
+}
