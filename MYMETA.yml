@@ -9,7 +9,7 @@ build_requires:
   Test::Warn: '0'
   Text::Diff: '0'
 dynamic_config: 0
-generated_by: 'Module::Build version 0.4224, CPAN::Meta::Converter version 2.150010'
+generated_by: 'Module::Build version 0.4231, CPAN::Meta::Converter version 2.150010'
 license: perl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html

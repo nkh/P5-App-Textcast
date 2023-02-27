@@ -17,9 +17,11 @@ textcast_play - play a textcast recorded by textcast_record
 
 =over 2
 
-=item  'h|help'      display help
+=item  'h|help'          display help
 
-=item  's|status'    display textcast status
+=item  's|status'        display textcast status
+
+=item  'speedup'         display textcast status
 
 =back
 
@@ -61,7 +63,7 @@ use App::Textcast 'play_textcast' ;
 
 #---------------------------------------------------------------------------------------------------------
 
-my ($overlay_directory, $display_status, $force_display_status, $start_paused) ;
+my ($overlay_directory, $display_status, $force_display_status, $start_paused, $speedup) ;
 unless
 	(
 	GetOptions
@@ -72,6 +74,7 @@ unless
 		's|status' => \$display_status,
 		'f|force_status' => \$force_display_status,
 		'start_paused' => \$start_paused,
+		'speedup=f' => \$speedup,
 		)
 	)
 	{
@@ -99,6 +102,7 @@ play_textcast
 	DISPLAY_STATUS => $display_status,
 	FORCE_DISPLAY_STATUS => $force_display_status,
 	START_PAUSED => $start_paused,
+	SPEEDUP => $speedup,
 	) ; 
 
 #---------------------------------------------------------------------------------------------------------

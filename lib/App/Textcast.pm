@@ -224,6 +224,8 @@ while (not $sub_process_ended)
 	{
 	($sub_process_ended, my $screen_diff, my $cursor_x, my $cursor_y) = check_sub_process_output($vt_process) ;
 	
+	return unless defined $screen_diff ;
+	
 	my $now = [gettimeofday] ;
 	my $elapsed = tv_interval($previous_time, $now);
 	$previous_time = $now ;
@@ -231,7 +233,7 @@ while (not $sub_process_ended)
 	my $screenshot_file_name = "$output_directory/$screenshot_index" ;
 	
 	write_file($screenshot_file_name, $screen_diff) ;
-			
+	
 	my ($terminal_columns, $terminal_rows) = $get_terminal_size->() ;
 		
 	append_file 
@@ -240,7 +242,7 @@ while (not $sub_process_ended)
 		
 		'{'
 		. "file => $screenshot_index, "
-		. sprintf('delay => %0.3f, ', $elapsed)
+		. sprintf('delay => %0.4f, ', $elapsed)
 		. "cursor_x => $cursor_x, "
 		. "cursor_y => $cursor_y, "
 		. 'size => ' . length($screen_diff) . ', '
@@ -353,6 +355,7 @@ Loads, checks, and initiates the textcast replay. Displays information after the
 	OVERLAY_DIRECTORY => $overlay_directory,
 	DISPLAY_STATUS => $display_status,
 	START_PAUSED => $start_paused,
+	SPEEDUP => $speedup,
 	) ; 
 
 I<Arguments>
@@ -366,6 +369,8 @@ I<Arguments>
 =item * DISPLAY_STATUS - Boolean - 
 
 =item * START_PAUSED -  not implemented
+
+=item * SPEEDUP - speeup factor
 
 =back
 
@@ -388,7 +393,7 @@ I<Exceptions>
 my (%arguments) = @_ ;
 
 my $input_directory = $arguments{TEXTCAST_DIRECTORY} or croak 'Error: Expected textcast location!' ;
-my $display_status =  $arguments{DISPLAY_STATUS} || 0 ;
+my $display_status =  $arguments{DISPLAY_STATUS} // 0 ;
 
 local $SIG{INT} = sub 
 			{
@@ -433,6 +438,7 @@ my ($total_play_time, $played_frames, $skipped_frames)
 		(
 		$input_directory,
 		$screenshot_information,
+		$arguments{SPEEDUP} // 1,
 		{
 			DISPLAY => $display_status,
 			ROW => $status_row,
@@ -450,7 +456,7 @@ return ;
 sub display_text_cast_data
 {
 
-=head2 [p] display_text_cast_data($input_directory, \@screenshot_information, \%display_status )
+=head2 [p] display_text_cast_data($input_directory, \@screenshot_information, $speedup, \%display_status )
 
 Plays a screencast.
 
@@ -461,6 +467,8 @@ I<Arguments>
 =item * $input_directory - String - directory containing the textcast
 
 =item * \@screenshot_information - see L<load_index>
+
+=item * $speedup - float
 
 =item * \%display_status - 
 
@@ -492,7 +500,7 @@ I<Exceptions> - None
 
 =cut
 
-my ($input_directory, $screenshot_information, $display_status,) = @_ ;
+my ($input_directory, $screenshot_information, $speedup, $display_status,) = @_ ;
 
 my $total_frames = scalar(@{$screenshot_information}) ;
 
@@ -521,7 +529,7 @@ for my $file_information (@{$screenshot_information})
 		# split sleep time in smaller chunks if we want to handle the user input
 		Readonly my $ONE_MILLION => 1_000_000 ;
 		
-		usleep $sleep_time * $ONE_MILLION if($sleep_time > 0) ;
+		usleep (($sleep_time / $speedup) * $ONE_MILLION) if($sleep_time > 0) ;
 		
 		$frame_display_time = [gettimeofday]  ;
 		
@@ -703,7 +711,7 @@ if(-e "$input_directory/index")
 	my $line = 0 ;
 	
 	my $regex = '{file => 0, delay => 0.0, cursor_x => 1, cursor_y => 1, size => 1, terminal_rows => 1, terminal_columns => 1, },' ;
-	$regex =~ s/^{/^{/sxm ;
+	$regex =~ s/^\{/^\{/sxm ;
 	$regex =~ s/([^[:digit:]]+)$/$1\$/sxmg ;
 	$regex =~ s/[[:digit:]]+/[[:digit:]]+/sxmg ;
 	
